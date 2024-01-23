@@ -10,6 +10,7 @@ import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
+import com.lucenstuff.fxglgames.suikagame.fruits.Apple;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
@@ -104,13 +105,7 @@ public class SuikaGame extends GameApplication {
         fd.setDensity(0.03f);
         physics.setFixtureDef(fd);
 
-        fruit = FXGL.entityBuilder()
-                .type(EntityType.FRUIT)
-                .at(400, 100)
-                .view("orange.png")
-                .bbox(new HitBox(BoundingShape.Companion.circle(34)))
-                .with(physics)
-                .buildAndAttach();
+
     }
 
     private Entity spawnFruitAt(Point2D position) {
@@ -129,6 +124,8 @@ public class SuikaGame extends GameApplication {
                 .with(fruitPhysics)
                 .with(new CollidableComponent(true))
                 .build();
+
+//        return new Apple(position.subtract(20, 20));
     }
 
     @Override
