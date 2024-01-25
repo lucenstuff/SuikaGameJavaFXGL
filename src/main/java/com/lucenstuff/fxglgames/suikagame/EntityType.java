@@ -1,5 +1,5 @@
 package com.lucenstuff.fxglgames.suikagame;
 
 public enum EntityType {
-    FRUIT, WALL, FLOOR
+    CHERRY, STRAWBERRY, GRAPE, LEMON, ORANGE, APPLE, PEAR,PEACH, PINEAPPLE, MELON, WATERMELON, WALL, FLOOR,
 }

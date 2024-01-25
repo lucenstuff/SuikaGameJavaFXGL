@@ -11,30 +11,29 @@ import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import com.lucenstuff.fxglgames.suikagame.EntityType;
 import javafx.geometry.Point2D;
 
-public class Fruit {
-
+public abstract class Fruit {
     String textureName;
     double bBoxRadius;
     PhysicsComponent fruitPhysics = new PhysicsComponent();
-
     Point2D position;
 
-    public Fruit(String textureName, double bBoxRadius) {
+    EntityType entityType;
+
+    public Fruit(String textureName, double bBoxRadius, EntityType entityType) {
 
         this.textureName = textureName;
         this.bBoxRadius = bBoxRadius;
         this.fruitPhysics = new PhysicsComponent();
+        this.entityType = entityType;
 
         fruitPhysics.setBodyType(BodyType.DYNAMIC);
         FixtureDef fruitFixtureDef = new FixtureDef();
         fruitFixtureDef.setDensity(0.03f);
         fruitPhysics.setFixtureDef(fruitFixtureDef);
-
     }
-
     public Entity buildFruit() {
         return FXGL.entityBuilder()
-                .type(EntityType.FRUIT)
+                .type(entityType)
                 .at(position)
                 .view(textureName)
                 .bbox(new HitBox(BoundingShape.circle(bBoxRadius)))

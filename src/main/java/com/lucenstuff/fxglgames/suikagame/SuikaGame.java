@@ -5,27 +5,23 @@ import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.components.CollidableComponent;
+import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
-import com.lucenstuff.fxglgames.suikagame.fruits.Orange;
+import com.lucenstuff.fxglgames.suikagame.fruits.*;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.input.MouseEvent;
 
+import java.util.Random;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
 
 public class SuikaGame extends GameApplication {
 
-//    ArrayList<Fruit> fruitArrayList = new ArrayList<>(Arrays.asList(
-//            new Grape(new Point2D(0, 0)),
-//            new Strawberry(new Point2D(0, 0)),
-//            new Lemon(new Point2D(0, 0)),
-//            new Orange(new Point2D(0, 0))
-//    ));
     private Entity fruit;
 
     protected void initGame() {
@@ -110,7 +106,9 @@ public class SuikaGame extends GameApplication {
     }
 
     private Entity spawnFruitAt(Point2D position) {
-       return new Orange(position).buildFruit();
+        Fruit[] fruits = {new Cherry(position), new Grape(position), new Lemon(position), new Strawberry(position), new Orange(position), new Apple(position)};
+        int randomIndex = new Random().nextInt(fruits.length);
+        return fruits[randomIndex].buildFruit();
     }
 
     @Override
@@ -123,12 +121,148 @@ public class SuikaGame extends GameApplication {
     }
 
     protected void initPhysics() {
+
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.CHERRY, EntityType.CHERRY) {
+            @Override
+            protected void onCollisionBegin(Entity e1, Entity e2) {
+                Point2D position1 = e1.getPosition();
+                Point2D position2 = e2.getPosition();
+                Point2D spawnPoint = position1.add(position2).multiply(0.5);
+                Entity strawberry = new Strawberry(spawnPoint).buildFruit();
+                FXGL.getGameWorld().addEntity(strawberry);
+                e1.removeFromWorld();
+                e2.removeFromWorld();
+            }
+        });
+
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.STRAWBERRY, EntityType.STRAWBERRY) {
+            @Override
+            protected void onCollisionBegin(Entity e1, Entity e2) {
+                Point2D position1 = e1.getPosition();
+                Point2D position2 = e2.getPosition();
+                Point2D spawnPoint = position1.add(position2).multiply(0.5);
+                Entity grape = new Grape(spawnPoint).buildFruit();
+                FXGL.getGameWorld().addEntity(grape);
+                e1.removeFromWorld();
+                e2.removeFromWorld();
+            }
+        });
+
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.GRAPE, EntityType.GRAPE) {
+            @Override
+            protected void onCollisionBegin(Entity e1, Entity e2) {
+                Point2D position1 = e1.getPosition();
+                Point2D position2 = e2.getPosition();
+                Point2D spawnPoint = position1.add(position2).multiply(0.5);
+                Entity lemon = new Lemon(spawnPoint).buildFruit();
+                FXGL.getGameWorld().addEntity(lemon);
+                e1.removeFromWorld();
+                e2.removeFromWorld();
+            }
+        });
+
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.LEMON, EntityType.LEMON) {
+            @Override
+            protected void onCollisionBegin(Entity e1, Entity e2) {
+                Point2D position1 = e1.getPosition();
+                Point2D position2 = e2.getPosition();
+                Point2D spawnPoint = position1.add(position2).multiply(0.5);
+                Entity orange = new Orange(spawnPoint).buildFruit();
+                FXGL.getGameWorld().addEntity(orange);
+                e1.removeFromWorld();
+                e2.removeFromWorld();
+            }
+        });
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.ORANGE, EntityType.ORANGE) {
+            @Override
+            protected void onCollisionBegin(Entity e1, Entity e2) {
+                Point2D position1 = e1.getPosition();
+                Point2D position2 = e2.getPosition();
+                Point2D spawnPoint = position1.add(position2).multiply(0.5);
+                Entity apple = new Apple(spawnPoint).buildFruit();
+                FXGL.getGameWorld().addEntity(apple);
+                e1.removeFromWorld();
+                e2.removeFromWorld();
+            }
+        });
+
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.APPLE, EntityType.APPLE) {
+            @Override
+            protected void onCollisionBegin(Entity e1, Entity e2) {
+                Point2D position1 = e1.getPosition();
+                Point2D position2 = e2.getPosition();
+                Point2D spawnPoint = position1.add(position2).multiply(0.5);
+                Entity pear = new Pear(spawnPoint).buildFruit();
+                FXGL.getGameWorld().addEntity(pear);
+                e1.removeFromWorld();
+                e2.removeFromWorld();
+            }
+        });
+
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.PEAR, EntityType.PEAR) {
+            @Override
+            protected void onCollisionBegin(Entity e1, Entity e2) {
+                Point2D position1 = e1.getPosition();
+                Point2D position2 = e2.getPosition();
+                Point2D spawnPoint = position1.add(position2).multiply(0.5);
+                Entity peach = new Peach(spawnPoint).buildFruit();
+                FXGL.getGameWorld().addEntity(peach);
+                e1.removeFromWorld();
+                e2.removeFromWorld();
+            }
+        });
+
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.PEACH, EntityType.PEACH) {
+            @Override
+            protected void onCollisionBegin(Entity e1, Entity e2) {
+                Point2D position1 = e1.getPosition();
+                Point2D position2 = e2.getPosition();
+                Point2D spawnPoint = position1.add(position2).multiply(0.5);
+                Entity pineapple = new Pineapple(spawnPoint).buildFruit();
+                FXGL.getGameWorld().addEntity(pineapple);
+                e1.removeFromWorld();
+                e2.removeFromWorld();
+            }
+        });
+
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.PINEAPPLE, EntityType.PINEAPPLE) {
+            @Override
+            protected void onCollisionBegin(Entity e1, Entity e2) {
+                Point2D position1 = e1.getPosition();
+                Point2D position2 = e2.getPosition();
+                Point2D spawnPoint = position1.add(position2).multiply(0.5);
+                Entity melon = new Melon(spawnPoint).buildFruit();
+                FXGL.getGameWorld().addEntity(melon);
+                e1.removeFromWorld();
+                e2.removeFromWorld();
+            }
+        });
+
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.MELON, EntityType.MELON) {
+            @Override
+            protected void onCollisionBegin(Entity e1, Entity e2) {
+                Point2D position1 = e1.getPosition();
+                Point2D position2 = e2.getPosition();
+                Point2D spawnPoint = position1.add(position2).multiply(0.5);
+                Entity watermelon = new Watermelon(spawnPoint).buildFruit();
+                FXGL.getGameWorld().addEntity(watermelon);
+                e1.removeFromWorld();
+                e2.removeFromWorld();
+            }
+        });
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.WATERMELON, EntityType.WATERMELON) {
+            @Override
+            protected void onCollisionBegin(Entity e1, Entity e2) {
+                e1.removeFromWorld();
+                e2.removeFromWorld();
+            }
+        });
+
     }
 
+
     protected void initUI() {
-        Button resetButton = new Button("Reset");
-        resetButton.setOnAction(e -> FXGL.getGameController().startNewGame());
-        getGameScene().addUINode(resetButton);
+
     }
 
     public static void main(String[] args) {
