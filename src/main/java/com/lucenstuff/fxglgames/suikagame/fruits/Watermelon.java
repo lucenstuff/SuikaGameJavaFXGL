@@ -6,7 +6,7 @@ import javafx.geometry.Point2D;
 public class Watermelon extends Fruit {
 
     public Watermelon(Point2D position) {
-        super("peach_view.png", 62.5, EntityType.WATERMELON);
+        super("watermelon_view.png", 105, EntityType.WATERMELON);
         this.position = position;
     }
 

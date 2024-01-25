@@ -11,19 +11,26 @@ import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import com.lucenstuff.fxglgames.suikagame.fruits.*;
 import javafx.geometry.Point2D;
-import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.input.MouseEvent;
 
-import java.util.Random;
+import java.util.*;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
 
 public class SuikaGame extends GameApplication {
 
-    private Entity fruit;
-
+    @Override
+    protected void initSettings(GameSettings settings) {
+        settings.setDeveloperMenuEnabled(true);
+        settings.setWidth(1280);
+        settings.setHeight(720);
+        settings.setTitle("Basic Game App");
+        settings.setVersion("0.1");
+    }
     protected void initGame() {
 
         double wallThickness = 15;
@@ -103,25 +110,61 @@ public class SuikaGame extends GameApplication {
         FixtureDef fd = new FixtureDef();
         fd.setDensity(0.03f);
         physics.setFixtureDef(fd);
+
+    }
+    private Queue<Fruit> fruitQueue = new LinkedList<>();
+    private ImageView nextFruitImageView;
+
+    private Entity spawnFruitAt(Point2D currentPosition) {
+        if (fruitQueue.isEmpty()) {
+            fillFruitQueue(currentPosition);
+        }
+
+        Fruit fruitToSpawn = fruitQueue.poll();
+
+        enqueueRandomFruit(currentPosition);
+
+        updateNextFruitImageView();
+
+        Entity newFruit = fruitToSpawn.buildFruit();
+        newFruit.setPosition(currentPosition);
+
+        return newFruit;
     }
 
-    private Entity spawnFruitAt(Point2D position) {
-        Fruit[] fruits = {new Cherry(position), new Grape(position), new Lemon(position), new Strawberry(position), new Orange(position), new Apple(position)};
+    private void fillFruitQueue(Point2D position) {
+        fruitQueue.addAll(Arrays.asList(
+                new Cherry(position),
+                new Grape(position),
+                new Lemon(position),
+                new Strawberry(position),
+                new Orange(position),
+                new Apple(position)
+        ));
+        Collections.shuffle((List<?>) fruitQueue);
+    }
+
+    private void enqueueRandomFruit(Point2D position) {
+        Fruit[] fruits = {
+                new Cherry(position),
+                new Grape(position),
+                new Lemon(position),
+                new Strawberry(position),
+                new Orange(position),
+                new Apple(position)
+        };
         int randomIndex = new Random().nextInt(fruits.length);
-        return fruits[randomIndex].buildFruit();
+        fruitQueue.offer(fruits[randomIndex]);
     }
 
-    @Override
-    protected void initSettings(GameSettings settings) {
-        settings.setDeveloperMenuEnabled(true);
-        settings.setWidth(1280);
-        settings.setHeight(720);
-        settings.setTitle("Basic Game App");
-        settings.setVersion("0.1");
+    private void updateNextFruitImageView() {
+        if (fruitQueue.peek() != null) {
+            Image nextFruitTexture = fruitQueue.peek().getTexture();
+            nextFruitImageView.setImage(nextFruitTexture);
+        }
     }
 
     protected void initPhysics() {
-
         FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.CHERRY, EntityType.CHERRY) {
             @Override
             protected void onCollisionBegin(Entity e1, Entity e2) {
@@ -257,13 +300,19 @@ public class SuikaGame extends GameApplication {
                 e2.removeFromWorld();
             }
         });
-
     }
 
 
     protected void initUI() {
+        nextFruitImageView = new ImageView();
+        nextFruitImageView.setFitWidth(50);
+        nextFruitImageView.setFitHeight(50);
+        nextFruitImageView.setY(10);
 
+        getGameScene().addUINode(nextFruitImageView);
     }
+
+
 
     public static void main(String[] args) {
         launch(args);

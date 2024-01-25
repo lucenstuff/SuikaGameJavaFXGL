@@ -10,6 +10,7 @@ import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import com.lucenstuff.fxglgames.suikagame.EntityType;
 import javafx.geometry.Point2D;
+import javafx.scene.image.Image;
 
 public abstract class Fruit {
     String textureName;
@@ -40,5 +41,9 @@ public abstract class Fruit {
                 .with(fruitPhysics)
                 .with(new CollidableComponent(true))
                 .build();
+    }
+
+    public Image getTexture() {
+        return FXGL.getAssetLoader().loadImage(textureName);
     }
 }
