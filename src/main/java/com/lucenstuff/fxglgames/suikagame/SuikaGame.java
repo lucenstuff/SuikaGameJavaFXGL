@@ -5,24 +5,27 @@ import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.components.CollidableComponent;
-import com.almasb.fxgl.physics.BoundingShape;
-import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
-import com.lucenstuff.fxglgames.suikagame.fruits.Apple;
+import com.lucenstuff.fxglgames.suikagame.fruits.Orange;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.input.MouseEvent;
+
+
 import static com.almasb.fxgl.dsl.FXGL.*;
 
 public class SuikaGame extends GameApplication {
 
-    public enum EntityType {
-        FRUIT, WALL, FLOOR
-    }
+//    ArrayList<Fruit> fruitArrayList = new ArrayList<>(Arrays.asList(
+//            new Grape(new Point2D(0, 0)),
+//            new Strawberry(new Point2D(0, 0)),
+//            new Lemon(new Point2D(0, 0)),
+//            new Orange(new Point2D(0, 0))
+//    ));
     private Entity fruit;
 
     protected void initGame() {
@@ -86,16 +89,16 @@ public class SuikaGame extends GameApplication {
             rectangle.setX(newRectangleX);
         });
 
+        FXGL.getInput().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            Entity newFruit = spawnFruitAt(rectangle.getPosition().add(50, 10));
+            FXGL.getGameWorld().addEntity(newFruit);
+        });
+
         FXGL.getInput().addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
             double mouseX = event.getSceneX();
             double newRectangleX = mouseX - (rectangle.getWidth() / 2);
             newRectangleX = Math.max(minX, Math.min(newRectangleX, maxX));
             rectangle.setX(newRectangleX);
-        });
-
-        FXGL.getInput().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            Entity newFruit = spawnFruitAt(rectangle.getPosition().add(50, 10));
-            FXGL.getGameWorld().addEntity(newFruit);
         });
 
         PhysicsComponent physics = new PhysicsComponent();
@@ -104,28 +107,10 @@ public class SuikaGame extends GameApplication {
         FixtureDef fd = new FixtureDef();
         fd.setDensity(0.03f);
         physics.setFixtureDef(fd);
-
-
     }
 
     private Entity spawnFruitAt(Point2D position) {
-        PhysicsComponent fruitPhysics = new PhysicsComponent();
-        fruitPhysics.setBodyType(BodyType.DYNAMIC);
-
-        FixtureDef fruitFixtureDef = new FixtureDef();
-        fruitFixtureDef.setDensity(0.03f);
-        fruitPhysics.setFixtureDef(fruitFixtureDef);
-
-        return FXGL.entityBuilder()
-                .type(EntityType.FRUIT)
-                .at(position.subtract(20, 20))
-                .view("orange.png")
-                .bbox(new HitBox(BoundingShape.circle(34)))
-                .with(fruitPhysics)
-                .with(new CollidableComponent(true))
-                .build();
-
-//        return new Apple(position.subtract(20, 20));
+       return new Orange(position).buildFruit();
     }
 
     @Override
@@ -137,19 +122,13 @@ public class SuikaGame extends GameApplication {
         settings.setVersion("0.1");
     }
 
-    protected void initInput() {
-
-    }
-
     protected void initPhysics() {
     }
 
     protected void initUI() {
-
         Button resetButton = new Button("Reset");
         resetButton.setOnAction(e -> FXGL.getGameController().startNewGame());
         getGameScene().addUINode(resetButton);
-
     }
 
     public static void main(String[] args) {
