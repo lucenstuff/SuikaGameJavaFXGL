@@ -13,7 +13,9 @@ import com.lucenstuff.fxglgames.suikagame.fruits.*;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.input.MouseEvent;
 
@@ -23,11 +25,14 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 
 public class SuikaGame extends GameApplication {
 
+    int APP_WIDTH = 1280;
+    int APP_HEIGHT = 720;
+
     @Override
     protected void initSettings(GameSettings settings) {
         settings.setDeveloperMenuEnabled(true);
-        settings.setWidth(1280);
-        settings.setHeight(720);
+        settings.setWidth(APP_WIDTH);
+        settings.setHeight(APP_HEIGHT);
         settings.setTitle("Basic Game App");
         settings.setVersion("0.1");
     }
@@ -35,8 +40,8 @@ public class SuikaGame extends GameApplication {
 
         double wallThickness = 15;
         double floorHeight = getAppHeight() - wallThickness * 4;
-        double wallHeight = 500;
-        double floorWidth = getAppWidth() - 2 * 200 - 2 * wallThickness + 2 * wallThickness;
+        double wallHeight = 520;
+        double floorWidth = getAppWidth() - 2 * 400 - 2 * wallThickness + 2 * wallThickness;
 
         PhysicsComponent containerPhysics = new PhysicsComponent();
         containerPhysics.setBodyType(BodyType.STATIC);
@@ -44,43 +49,56 @@ public class SuikaGame extends GameApplication {
         PhysicsComponent wallPhysics = new PhysicsComponent();
         wallPhysics.setBodyType(BodyType.STATIC);
 
+        PhysicsComponent rightWallPhysics = new PhysicsComponent();
+        rightWallPhysics.setBodyType(BodyType.STATIC);
 
-        FXGL.entityBuilder()
+        Entity backgroundImg = FXGL.entityBuilder()
+                .view("background_view.png")
+                .buildAndAttach();
+
+        Entity ContainerImg = FXGL.entityBuilder()
+                .view("container_view.png")
+                .at(387.5, 135)
+                .zIndex(10)
+                .buildAndAttach();
+
+
+        Entity rectangle = FXGL.entityBuilder()
+                .at(400, 60)
+                .viewWithBBox(new Rectangle(100, 50, Color.BLUE))
+                .with(new CollidableComponent(true))
+                .buildAndAttach();
+
+        Entity line = FXGL.entityBuilder()
+                .at (rectangle.getX() + rectangle.getWidth() , rectangle.getY()+rectangle.getHeight())
+                .view(new Line(0, 0, 0, wallHeight+25) {{
+                    setStroke(Color.WHITE);
+                }})
+                .buildAndAttach();
+
+        Entity floor = FXGL.entityBuilder()
                 .type(EntityType.FLOOR)
-                .at(200, floorHeight)
-                .viewWithBBox(new Rectangle(floorWidth, wallThickness, Color.GREY))
+                .at(400, floorHeight)
+                .viewWithBBox(new Rectangle(floorWidth, wallThickness, Color.TRANSPARENT))
                 .with(new CollidableComponent(true))
                 .with(containerPhysics)
                 .buildAndAttach();
 
         Entity leftWall = FXGL.entityBuilder()
                 .type(EntityType.WALL)
-                .at(350, floorHeight - wallHeight)
-                .viewWithBBox(new Rectangle(wallThickness, wallHeight, Color.GREY))
+                .at(387.5, floorHeight - wallHeight)
+                .viewWithBBox(new Rectangle(wallThickness, wallHeight, Color.TRANSPARENT))
                 .with(new PhysicsComponent(), new CollidableComponent(true))
                 .buildAndAttach();
 
-        PhysicsComponent rightWallPhysics = new PhysicsComponent();
-        rightWallPhysics.setBodyType(BodyType.STATIC);
-
         Entity rightWall = FXGL.entityBuilder()
                 .type(EntityType.WALL)
-                .at(getAppWidth() - wallThickness - 350, floorHeight - wallHeight)
-                .viewWithBBox(new Rectangle(wallThickness, wallHeight, Color.GREY))
+                .at(getAppWidth() - wallThickness - 387.5, floorHeight - wallHeight)
+                .viewWithBBox(new Rectangle(wallThickness, wallHeight, Color.TRANSPARENT))
                 .with(rightWallPhysics, new CollidableComponent(true))
                 .buildAndAttach();
 
-        Entity rectangle = FXGL.entityBuilder()
-                .at(400, 120)
-                .viewWithBBox(new Rectangle(100, 20, Color.BLUE))
-                .with(new CollidableComponent(true))
-                .buildAndAttach();
 
-        rectangle.getViewComponent().addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
-            double mouseX = event.getX();
-            double newRectangleX = mouseX - 50;
-            rectangle.setPosition(newRectangleX, rectangle.getY());
-        });
 
         double minX = 330;
         double maxX = FXGL.getAppWidth() - 440;
@@ -90,10 +108,12 @@ public class SuikaGame extends GameApplication {
             double newRectangleX = mouseX - (rectangle.getWidth() / 2);
             newRectangleX = Math.max(minX, Math.min(newRectangleX, maxX));
             rectangle.setX(newRectangleX);
+            line.setX(rectangle.getX() + rectangle.getWidth() / 2);
         });
 
+
         FXGL.getInput().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            Entity newFruit = spawnFruitAt(rectangle.getPosition().add(50, 10));
+            Entity newFruit = spawnFruitAt(rectangle.getPosition());
             FXGL.getGameWorld().addEntity(newFruit);
         });
 
@@ -102,17 +122,11 @@ public class SuikaGame extends GameApplication {
             double newRectangleX = mouseX - (rectangle.getWidth() / 2);
             newRectangleX = Math.max(minX, Math.min(newRectangleX, maxX));
             rectangle.setX(newRectangleX);
+            line.setX(rectangle.getX() + rectangle.getWidth() / 2);
         });
 
-        PhysicsComponent physics = new PhysicsComponent();
-        physics.setBodyType(BodyType.DYNAMIC);
-
-        FixtureDef fd = new FixtureDef();
-        fd.setDensity(0.03f);
-        physics.setFixtureDef(fd);
-
     }
-    private Queue<Fruit> fruitQueue = new LinkedList<>();
+    private final Queue<Fruit> fruitQueue = new LinkedList<>();
     private ImageView nextFruitImageView;
 
     private Entity spawnFruitAt(Point2D currentPosition) {
@@ -302,16 +316,30 @@ public class SuikaGame extends GameApplication {
         });
     }
 
-
     protected void initUI() {
         nextFruitImageView = new ImageView();
-        nextFruitImageView.setFitWidth(50);
-        nextFruitImageView.setFitHeight(50);
-        nextFruitImageView.setY(10);
-
+        nextFruitImageView.setFitWidth(60);
+        nextFruitImageView.setFitHeight(60);
+        nextFruitImageView.setX(1095);
+        nextFruitImageView.setY(120);
         getGameScene().addUINode(nextFruitImageView);
-    }
 
+        Entity ringOfFruits = FXGL.entityBuilder()
+                .view("ring_view.png")
+                .at(1000, 400)
+                .buildAndAttach();
+
+        Entity NextFruitBuuble = FXGL.entityBuilder()
+                .view("next_fruit_view.png")
+                .at(1040, 50)
+                .buildAndAttach();
+
+        Entity ScoreBubble = FXGL.entityBuilder()
+                .view("score_view.png")
+                .at(40, 50)
+                .buildAndAttach();
+
+    }
 
 
     public static void main(String[] args) {

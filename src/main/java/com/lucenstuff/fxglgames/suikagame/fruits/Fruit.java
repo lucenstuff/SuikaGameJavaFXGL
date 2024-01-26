@@ -29,7 +29,7 @@ public abstract class Fruit {
 
         fruitPhysics.setBodyType(BodyType.DYNAMIC);
         FixtureDef fruitFixtureDef = new FixtureDef();
-        fruitFixtureDef.setDensity(0.03f);
+        fruitFixtureDef.setDensity(0.01f);
         fruitPhysics.setFixtureDef(fruitFixtureDef);
     }
     public Entity buildFruit() {
