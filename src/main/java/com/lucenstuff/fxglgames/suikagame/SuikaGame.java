@@ -8,22 +8,27 @@ import com.almasb.fxgl.entity.components.CollidableComponent;
 import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
-import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import com.lucenstuff.fxglgames.suikagame.fruits.*;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
 import java.util.*;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
 
 public class SuikaGame extends GameApplication {
+
+    private IntegerProperty GAME_SCORE;
 
     int APP_WIDTH = 1280;
     int APP_HEIGHT = 720;
@@ -42,6 +47,7 @@ public class SuikaGame extends GameApplication {
         double floorHeight = getAppHeight() - wallThickness * 4;
         double wallHeight = 520;
         double floorWidth = getAppWidth() - 2 * 400 - 2 * wallThickness + 2 * wallThickness;
+        GAME_SCORE = new SimpleIntegerProperty(0);
 
         PhysicsComponent containerPhysics = new PhysicsComponent();
         containerPhysics.setBodyType(BodyType.STATIC);
@@ -189,6 +195,7 @@ public class SuikaGame extends GameApplication {
                 FXGL.getGameWorld().addEntity(strawberry);
                 e1.removeFromWorld();
                 e2.removeFromWorld();
+                GAME_SCORE.set(GAME_SCORE.get() + 1);
             }
         });
 
@@ -202,6 +209,7 @@ public class SuikaGame extends GameApplication {
                 FXGL.getGameWorld().addEntity(grape);
                 e1.removeFromWorld();
                 e2.removeFromWorld();
+                GAME_SCORE.set(GAME_SCORE.get() + 4);
             }
         });
 
@@ -215,6 +223,7 @@ public class SuikaGame extends GameApplication {
                 FXGL.getGameWorld().addEntity(lemon);
                 e1.removeFromWorld();
                 e2.removeFromWorld();
+                GAME_SCORE.set(GAME_SCORE.get() + 9);
             }
         });
 
@@ -228,6 +237,7 @@ public class SuikaGame extends GameApplication {
                 FXGL.getGameWorld().addEntity(orange);
                 e1.removeFromWorld();
                 e2.removeFromWorld();
+                GAME_SCORE.set(GAME_SCORE.get() + 14);
             }
         });
         FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.ORANGE, EntityType.ORANGE) {
@@ -240,6 +250,7 @@ public class SuikaGame extends GameApplication {
                 FXGL.getGameWorld().addEntity(apple);
                 e1.removeFromWorld();
                 e2.removeFromWorld();
+                GAME_SCORE.set(GAME_SCORE.get() + 20);
             }
         });
 
@@ -253,6 +264,7 @@ public class SuikaGame extends GameApplication {
                 FXGL.getGameWorld().addEntity(pear);
                 e1.removeFromWorld();
                 e2.removeFromWorld();
+                GAME_SCORE.set(GAME_SCORE.get() + 27);
             }
         });
 
@@ -266,6 +278,7 @@ public class SuikaGame extends GameApplication {
                 FXGL.getGameWorld().addEntity(peach);
                 e1.removeFromWorld();
                 e2.removeFromWorld();
+                GAME_SCORE.set(GAME_SCORE.get() + 35);
             }
         });
 
@@ -279,6 +292,7 @@ public class SuikaGame extends GameApplication {
                 FXGL.getGameWorld().addEntity(pineapple);
                 e1.removeFromWorld();
                 e2.removeFromWorld();
+                GAME_SCORE.set(GAME_SCORE.get() + 44);
             }
         });
 
@@ -292,6 +306,7 @@ public class SuikaGame extends GameApplication {
                 FXGL.getGameWorld().addEntity(melon);
                 e1.removeFromWorld();
                 e2.removeFromWorld();
+                GAME_SCORE.set(GAME_SCORE.get() + 54);
             }
         });
 
@@ -305,6 +320,7 @@ public class SuikaGame extends GameApplication {
                 FXGL.getGameWorld().addEntity(watermelon);
                 e1.removeFromWorld();
                 e2.removeFromWorld();
+                GAME_SCORE.set(GAME_SCORE.get() + 65);
             }
         });
         FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.WATERMELON, EntityType.WATERMELON) {
@@ -312,6 +328,7 @@ public class SuikaGame extends GameApplication {
             protected void onCollisionBegin(Entity e1, Entity e2) {
                 e1.removeFromWorld();
                 e2.removeFromWorld();
+                GAME_SCORE.set(GAME_SCORE.get() + 77);
             }
         });
     }
@@ -323,6 +340,14 @@ public class SuikaGame extends GameApplication {
         nextFruitImageView.setX(1095);
         nextFruitImageView.setY(120);
         getGameScene().addUINode(nextFruitImageView);
+
+        Text scoreText = FXGL.getUIFactoryService().newText("", Color.WHITE, 60);
+        scoreText.textProperty().bind(GAME_SCORE.asString());
+        scoreText.setX(105);
+        scoreText.setY(160);
+        scoreText.setStroke(Color.BLACK);
+        scoreText.setStrokeWidth(2);
+        getGameScene().addUINode(scoreText);
 
         Entity ringOfFruits = FXGL.entityBuilder()
                 .view("ring_view.png")
@@ -340,7 +365,6 @@ public class SuikaGame extends GameApplication {
                 .buildAndAttach();
 
     }
-
 
     public static void main(String[] args) {
         launch(args);
