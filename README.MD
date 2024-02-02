@@ -6,4 +6,4 @@
 
 <h2>Project Screenshots:</h2>
 
-<img src="https://res.cloudinary.com/dcbmvyyes/image/upload/v1706833792/Suika/view_ckd01m.png" alt="project-screenshot" width="1280" height="720/">
+<img src="https://res.cloudinary.com/dcbmvyyes/image/upload/v1706833792/Suika/view_ckd01m.png" alt="project-screenshot" width="640" height="360/">
