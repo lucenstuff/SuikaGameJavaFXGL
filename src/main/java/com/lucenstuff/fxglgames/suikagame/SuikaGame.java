@@ -18,10 +18,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-
+import javafx.util.Duration;
 import java.util.*;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
@@ -38,15 +36,15 @@ public class SuikaGame extends GameApplication {
         settings.setDeveloperMenuEnabled(true);
         settings.setWidth(APP_WIDTH);
         settings.setHeight(APP_HEIGHT);
-        settings.setTitle("Basic Game App");
+        settings.setTitle("Suika FXGL");
         settings.setVersion("0.1");
     }
     protected void initGame() {
 
-        double wallThickness = 15;
-        double floorHeight = getAppHeight() - wallThickness * 4;
-        double wallHeight = 520;
-        double floorWidth = getAppWidth() - 2 * 400 - 2 * wallThickness + 2 * wallThickness;
+        double wallThickness = 1;
+        double floorHeight = getAppHeight() - getAppHeight()*0.0833;
+        double wallHeight = getAppHeight()*0.752;
+        double floorWidth = getAppWidth() ;
         GAME_SCORE = new SimpleIntegerProperty(0);
 
         PhysicsComponent containerPhysics = new PhysicsComponent();
@@ -65,13 +63,20 @@ public class SuikaGame extends GameApplication {
         Entity ContainerImg = FXGL.entityBuilder()
                 .view("container_view.png")
                 .at(387.5, 135)
-                .zIndex(10)
+                .zIndex(0)
                 .buildAndAttach();
 
 
         Entity rectangle = FXGL.entityBuilder()
                 .at(400, 60)
                 .viewWithBBox(new Rectangle(100, 50, Color.BLUE))
+                .with(new CollidableComponent(true))
+                .buildAndAttach();
+
+        Entity looseCollider = FXGL.entityBuilder()
+                .type(ContainerType.LOOSE_COLLIDER)
+                .at(0, 130)
+                .viewWithBBox(new Rectangle(floorWidth, 15, Color.RED))
                 .with(new CollidableComponent(true))
                 .buildAndAttach();
 
@@ -83,30 +88,29 @@ public class SuikaGame extends GameApplication {
                 .buildAndAttach();
 
         Entity floor = FXGL.entityBuilder()
-                .type(EntityType.FLOOR)
-                .at(400, floorHeight)
-                .viewWithBBox(new Rectangle(floorWidth, wallThickness, Color.TRANSPARENT))
+                .type(ContainerType.FLOOR)
+                .at(0, floorHeight)
+                .viewWithBBox(new Rectangle(floorWidth, wallThickness, Color.GRAY))
                 .with(new CollidableComponent(true))
                 .with(containerPhysics)
                 .buildAndAttach();
 
         Entity leftWall = FXGL.entityBuilder()
-                .type(EntityType.WALL)
+                .type(ContainerType.WALL)
                 .at(387.5, floorHeight - wallHeight)
-                .viewWithBBox(new Rectangle(wallThickness, wallHeight, Color.TRANSPARENT))
+                .viewWithBBox(new Rectangle(wallThickness, wallHeight, Color.GRAY))
                 .with(new PhysicsComponent(), new CollidableComponent(true))
+
                 .buildAndAttach();
 
         Entity rightWall = FXGL.entityBuilder()
-                .type(EntityType.WALL)
+                .type(ContainerType.WALL)
                 .at(getAppWidth() - wallThickness - 387.5, floorHeight - wallHeight)
-                .viewWithBBox(new Rectangle(wallThickness, wallHeight, Color.TRANSPARENT))
+                .viewWithBBox(new Rectangle(wallThickness, wallHeight, Color.GRAY))
                 .with(rightWallPhysics, new CollidableComponent(true))
                 .buildAndAttach();
 
-
-
-        double minX = 330;
+        double minX = 355;
         double maxX = FXGL.getAppWidth() - 440;
 
         FXGL.getInput().addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
@@ -119,7 +123,7 @@ public class SuikaGame extends GameApplication {
 
 
         FXGL.getInput().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            Entity newFruit = spawnFruitAt(rectangle.getPosition());
+            Entity newFruit = spawnFruitAt(rectangle.getPosition().add(10, 0));
             FXGL.getGameWorld().addEntity(newFruit);
         });
 
@@ -146,6 +150,7 @@ public class SuikaGame extends GameApplication {
 
         updateNextFruitImageView();
 
+        assert fruitToSpawn != null;
         Entity newFruit = fruitToSpawn.buildFruit();
         newFruit.setPosition(currentPosition);
 
@@ -185,7 +190,7 @@ public class SuikaGame extends GameApplication {
     }
 
     protected void initPhysics() {
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.CHERRY, EntityType.CHERRY) {
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.CHERRY, FruitType.CHERRY) {
             @Override
             protected void onCollisionBegin(Entity e1, Entity e2) {
                 Point2D position1 = e1.getPosition();
@@ -199,7 +204,7 @@ public class SuikaGame extends GameApplication {
             }
         });
 
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.STRAWBERRY, EntityType.STRAWBERRY) {
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.STRAWBERRY, FruitType.STRAWBERRY) {
             @Override
             protected void onCollisionBegin(Entity e1, Entity e2) {
                 Point2D position1 = e1.getPosition();
@@ -213,7 +218,7 @@ public class SuikaGame extends GameApplication {
             }
         });
 
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.GRAPE, EntityType.GRAPE) {
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.GRAPE, FruitType.GRAPE) {
             @Override
             protected void onCollisionBegin(Entity e1, Entity e2) {
                 Point2D position1 = e1.getPosition();
@@ -227,7 +232,7 @@ public class SuikaGame extends GameApplication {
             }
         });
 
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.LEMON, EntityType.LEMON) {
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.LEMON, FruitType.LEMON) {
             @Override
             protected void onCollisionBegin(Entity e1, Entity e2) {
                 Point2D position1 = e1.getPosition();
@@ -240,7 +245,7 @@ public class SuikaGame extends GameApplication {
                 GAME_SCORE.set(GAME_SCORE.get() + 14);
             }
         });
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.ORANGE, EntityType.ORANGE) {
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.ORANGE, FruitType.ORANGE) {
             @Override
             protected void onCollisionBegin(Entity e1, Entity e2) {
                 Point2D position1 = e1.getPosition();
@@ -254,7 +259,7 @@ public class SuikaGame extends GameApplication {
             }
         });
 
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.APPLE, EntityType.APPLE) {
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.APPLE, FruitType.APPLE) {
             @Override
             protected void onCollisionBegin(Entity e1, Entity e2) {
                 Point2D position1 = e1.getPosition();
@@ -268,7 +273,7 @@ public class SuikaGame extends GameApplication {
             }
         });
 
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.PEAR, EntityType.PEAR) {
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.PEAR, FruitType.PEAR) {
             @Override
             protected void onCollisionBegin(Entity e1, Entity e2) {
                 Point2D position1 = e1.getPosition();
@@ -282,7 +287,7 @@ public class SuikaGame extends GameApplication {
             }
         });
 
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.PEACH, EntityType.PEACH) {
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.PEACH, FruitType.PEACH) {
             @Override
             protected void onCollisionBegin(Entity e1, Entity e2) {
                 Point2D position1 = e1.getPosition();
@@ -296,7 +301,7 @@ public class SuikaGame extends GameApplication {
             }
         });
 
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.PINEAPPLE, EntityType.PINEAPPLE) {
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.PINEAPPLE, FruitType.PINEAPPLE) {
             @Override
             protected void onCollisionBegin(Entity e1, Entity e2) {
                 Point2D position1 = e1.getPosition();
@@ -309,8 +314,7 @@ public class SuikaGame extends GameApplication {
                 GAME_SCORE.set(GAME_SCORE.get() + 54);
             }
         });
-
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.MELON, EntityType.MELON) {
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.MELON, FruitType.MELON) {
             @Override
             protected void onCollisionBegin(Entity e1, Entity e2) {
                 Point2D position1 = e1.getPosition();
@@ -323,7 +327,7 @@ public class SuikaGame extends GameApplication {
                 GAME_SCORE.set(GAME_SCORE.get() + 65);
             }
         });
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.WATERMELON, EntityType.WATERMELON) {
+        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.WATERMELON, FruitType.WATERMELON) {
             @Override
             protected void onCollisionBegin(Entity e1, Entity e2) {
                 e1.removeFromWorld();
@@ -331,6 +335,29 @@ public class SuikaGame extends GameApplication {
                 GAME_SCORE.set(GAME_SCORE.get() + 77);
             }
         });
+
+        //End Game Condition
+
+        FruitType[] fruitTypes = {
+                FruitType.CHERRY, FruitType.STRAWBERRY, FruitType.GRAPE, FruitType.LEMON, FruitType.ORANGE, FruitType.APPLE, FruitType.PEAR, FruitType.PEACH, FruitType.PINEAPPLE, FruitType.MELON, FruitType.WATERMELON
+        };
+
+        for (FruitType fruitType : fruitTypes) {
+            FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(fruitType, ContainerType.LOOSE_COLLIDER) {
+                @Override
+                protected void onCollisionBegin(Entity fruit, Entity looseCollider) {
+                    FXGL.getGameTimer().runOnceAfter(() -> {
+                        if (fruit.isActive() && fruit.isColliding(looseCollider)) {
+                            endGame();
+                        }
+                    }, Duration.seconds(2));
+                }
+            });
+        }
+    }
+
+    private void endGame() {
+        FXGL.getDialogService().showMessageBox("Game Over, your score is: " + GAME_SCORE.get());
     }
 
     protected void initUI() {

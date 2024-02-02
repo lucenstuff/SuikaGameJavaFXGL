@@ -8,7 +8,7 @@ import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
-import com.lucenstuff.fxglgames.suikagame.EntityType;
+import com.lucenstuff.fxglgames.suikagame.FruitType;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 
@@ -18,23 +18,24 @@ public abstract class Fruit {
     PhysicsComponent fruitPhysics = new PhysicsComponent();
     Point2D position;
 
-    EntityType entityType;
+    FruitType fruitType;
 
-    public Fruit(String textureName, double bBoxRadius, EntityType entityType) {
+    public Fruit(String textureName, double bBoxRadius, FruitType fruitType) {
 
         this.textureName = textureName;
         this.bBoxRadius = bBoxRadius;
         this.fruitPhysics = new PhysicsComponent();
-        this.entityType = entityType;
+        this.fruitType = fruitType;
 
         fruitPhysics.setBodyType(BodyType.DYNAMIC);
         FixtureDef fruitFixtureDef = new FixtureDef();
         fruitFixtureDef.setDensity(0.01f);
         fruitPhysics.setFixtureDef(fruitFixtureDef);
     }
+
     public Entity buildFruit() {
         return FXGL.entityBuilder()
-                .type(entityType)
+                .type(fruitType)
                 .at(position)
                 .view(textureName)
                 .bbox(new HitBox(BoundingShape.circle(bBoxRadius)))
