@@ -2,6 +2,7 @@ package com.lucenstuff.fxglgames.suikagame;
 
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
+import com.almasb.fxgl.audio.Music;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.components.CollidableComponent;
@@ -55,6 +56,7 @@ public class SuikaGame extends GameApplication {
 
         PhysicsComponent rightWallPhysics = new PhysicsComponent();
         rightWallPhysics.setBodyType(BodyType.STATIC);
+
 
         Entity backgroundImg = FXGL.entityBuilder()
                 .view("background_view.png")
@@ -125,6 +127,7 @@ public class SuikaGame extends GameApplication {
         FXGL.getInput().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             Entity newFruit = spawnFruitAt(rectangle.getPosition().add(10, 0));
             FXGL.getGameWorld().addEntity(newFruit);
+            FXGL.play("fruit_drop.wav");
         });
 
         FXGL.getInput().addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
@@ -201,6 +204,7 @@ public class SuikaGame extends GameApplication {
                 e1.removeFromWorld();
                 e2.removeFromWorld();
                 GAME_SCORE.set(GAME_SCORE.get() + 1);
+                FXGL.play("fruit_merge.wav");
             }
         });
 
@@ -215,6 +219,7 @@ public class SuikaGame extends GameApplication {
                 e1.removeFromWorld();
                 e2.removeFromWorld();
                 GAME_SCORE.set(GAME_SCORE.get() + 4);
+                FXGL.play("fruit_merge.wav");
             }
         });
 
@@ -229,6 +234,7 @@ public class SuikaGame extends GameApplication {
                 e1.removeFromWorld();
                 e2.removeFromWorld();
                 GAME_SCORE.set(GAME_SCORE.get() + 9);
+                FXGL.play("fruit_merge.wav");
             }
         });
 
@@ -243,6 +249,7 @@ public class SuikaGame extends GameApplication {
                 e1.removeFromWorld();
                 e2.removeFromWorld();
                 GAME_SCORE.set(GAME_SCORE.get() + 14);
+                FXGL.play("fruit_merge.wav");
             }
         });
         FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.ORANGE, FruitType.ORANGE) {
@@ -256,6 +263,7 @@ public class SuikaGame extends GameApplication {
                 e1.removeFromWorld();
                 e2.removeFromWorld();
                 GAME_SCORE.set(GAME_SCORE.get() + 20);
+                FXGL.play("fruit_merge.wav");
             }
         });
 
@@ -270,6 +278,7 @@ public class SuikaGame extends GameApplication {
                 e1.removeFromWorld();
                 e2.removeFromWorld();
                 GAME_SCORE.set(GAME_SCORE.get() + 27);
+                FXGL.play("fruit_merge.wav");
             }
         });
 
@@ -284,6 +293,7 @@ public class SuikaGame extends GameApplication {
                 e1.removeFromWorld();
                 e2.removeFromWorld();
                 GAME_SCORE.set(GAME_SCORE.get() + 35);
+                FXGL.play("fruit_merge.wav");
             }
         });
 
@@ -298,6 +308,7 @@ public class SuikaGame extends GameApplication {
                 e1.removeFromWorld();
                 e2.removeFromWorld();
                 GAME_SCORE.set(GAME_SCORE.get() + 44);
+                FXGL.play("fruit_merge.wav");
             }
         });
 
@@ -312,6 +323,7 @@ public class SuikaGame extends GameApplication {
                 e1.removeFromWorld();
                 e2.removeFromWorld();
                 GAME_SCORE.set(GAME_SCORE.get() + 54);
+                FXGL.play("fruit_merge.wav");
             }
         });
         FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.MELON, FruitType.MELON) {
@@ -325,6 +337,7 @@ public class SuikaGame extends GameApplication {
                 e1.removeFromWorld();
                 e2.removeFromWorld();
                 GAME_SCORE.set(GAME_SCORE.get() + 65);
+                FXGL.play("fruit_merge.wav");
             }
         });
         FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.WATERMELON, FruitType.WATERMELON) {
@@ -333,6 +346,7 @@ public class SuikaGame extends GameApplication {
                 e1.removeFromWorld();
                 e2.removeFromWorld();
                 GAME_SCORE.set(GAME_SCORE.get() + 77);
+                FXGL.play("fruit_merge.wav");
             }
         });
 
