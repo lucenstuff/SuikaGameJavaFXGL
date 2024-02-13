@@ -422,8 +422,14 @@ public class SuikaGame extends GameApplication {
                 .at(40, 50)
                 .buildAndAttach();
 
+        initFruits();
     }
 
+
+    private void initFruits() {
+        Entity newFruit = spawnFruitAt(new Point2D(10, 1000));
+        FXGL.getGameWorld().addEntity(newFruit);
+    }
     public static void main(String[] args) {
         launch(args);
     }
