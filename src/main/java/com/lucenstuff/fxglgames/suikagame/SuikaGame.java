@@ -28,6 +28,8 @@ public class SuikaGame extends GameApplication {
 
     private IntegerProperty GAME_SCORE;
 
+    private Point2D rectanglePosition = new Point2D(0, 0);
+
     int APP_WIDTH = 1280;
     int APP_HEIGHT = 720;
 
@@ -136,6 +138,14 @@ public class SuikaGame extends GameApplication {
             newRectangleX = Math.max(minX, Math.min(newRectangleX, maxX));
             rectangle.setX(newRectangleX);
             line.setX(rectangle.getX() + rectangle.getWidth() / 2);
+        });
+
+        rectangle.xProperty().addListener((obs, oldX, newX) -> {
+            currentFruitImageView.setX(newX.doubleValue());
+        });
+
+        rectangle.yProperty().addListener((obs, oldY, newY) -> {
+            currentFruitImageView.setY(newY.doubleValue());
         });
 
 
@@ -395,8 +405,8 @@ public class SuikaGame extends GameApplication {
         getGameScene().addUINode(nextFruitImageView);
 
         currentFruitImageView = new ImageView();
-        currentFruitImageView.setX(10);
-        currentFruitImageView.setY(10);
+        currentFruitImageView.setX(rectanglePosition.getX());
+        currentFruitImageView.setY(rectanglePosition.getY());
         getGameScene().addUINode(currentFruitImageView);
 
         Text scoreText = FXGL.getUIFactoryService().newText("", Color.WHITE, 60);
