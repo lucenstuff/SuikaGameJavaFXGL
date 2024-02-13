@@ -33,6 +33,9 @@ public class SuikaGame extends GameApplication {
     int APP_WIDTH = 1280;
     int APP_HEIGHT = 720;
 
+    double minX = 340;
+    double maxX = 840;
+
     @Override
     protected void initSettings(GameSettings settings) {
         settings.setAppIcon("watermelon_view.png");
@@ -114,8 +117,7 @@ public class SuikaGame extends GameApplication {
                 .with(rightWallPhysics, new CollidableComponent(true))
                 .buildAndAttach();
 
-        double minX = 355;
-        double maxX = FXGL.getAppWidth() - 440;
+
 
         FXGL.getInput().addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
             double mouseX = event.getSceneX();
@@ -127,9 +129,15 @@ public class SuikaGame extends GameApplication {
 
 
         FXGL.getInput().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            Entity newFruit = spawnFruitAt(rectangle.getPosition().add(10, 0));
+            Entity newFruit = spawnFruitAt(rectangle.getPosition().add((rectangle.getWidth() / 2-currentFruitImageView.getImage().getWidth()/2), 0));
             FXGL.getGameWorld().addEntity(newFruit);
             FXGL.play("fruit_drop.wav");
+            double imageWidth = currentFruitImageView.getImage().getWidth();
+            double imageHeight = currentFruitImageView.getImage().getHeight();
+            currentFruitImageView.setX(rectangle.getX()+rectangle.getWidth()/2 - imageWidth/2);
+            currentFruitImageView.setY(60+(rectangle.getHeight())-imageHeight);
+            minX = (340+currentFruitImageView.getImage().getWidth()/2);
+            maxX = (FXGL.getAppWidth() - 440 - currentFruitImageView.getImage().getWidth()/2);
         });
 
         FXGL.getInput().addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
@@ -141,12 +149,14 @@ public class SuikaGame extends GameApplication {
         });
 
         rectangle.xProperty().addListener((obs, oldX, newX) -> {
-            currentFruitImageView.setX(newX.doubleValue());
+            double imageWidth = currentFruitImageView.getImage().getWidth();
+            double imageHeight = currentFruitImageView.getImage().getHeight();
+            currentFruitImageView.setX(newX.doubleValue()+rectangle.getWidth()/2 - imageWidth/2);
+            currentFruitImageView.setY(60+(rectangle.getHeight())-imageHeight);
+            minX = (340+currentFruitImageView.getImage().getWidth()/2);
+            maxX = (FXGL.getAppWidth() - 440 - currentFruitImageView.getImage().getWidth()/2);
         });
 
-        rectangle.yProperty().addListener((obs, oldY, newY) -> {
-            currentFruitImageView.setY(newY.doubleValue());
-        });
 
 
     }
