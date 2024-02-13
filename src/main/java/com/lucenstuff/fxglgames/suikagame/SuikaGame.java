@@ -2,7 +2,6 @@ package com.lucenstuff.fxglgames.suikagame;
 
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
-import com.almasb.fxgl.audio.Music;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.components.CollidableComponent;
@@ -34,6 +33,7 @@ public class SuikaGame extends GameApplication {
 
     @Override
     protected void initSettings(GameSettings settings) {
+        settings.setAppIcon("watermelon_view.png");
         settings.setDeveloperMenuEnabled(true);
         settings.setWidth(APP_WIDTH);
         settings.setHeight(APP_HEIGHT);
@@ -138,9 +138,11 @@ public class SuikaGame extends GameApplication {
             line.setX(rectangle.getX() + rectangle.getWidth() / 2);
         });
 
+
     }
     private final Queue<Fruit> fruitQueue = new LinkedList<>();
     private ImageView nextFruitImageView;
+    private ImageView currentFruitImageView;
 
     private Entity spawnFruitAt(Point2D currentPosition) {
         if (fruitQueue.isEmpty()) {
@@ -151,6 +153,7 @@ public class SuikaGame extends GameApplication {
 
         enqueueRandomFruit(currentPosition);
 
+        updateCurrentFruitImageView();
         updateNextFruitImageView();
 
         assert fruitToSpawn != null;
@@ -185,12 +188,21 @@ public class SuikaGame extends GameApplication {
         fruitQueue.offer(fruits[randomIndex]);
     }
 
-    private void updateNextFruitImageView() {
+    private void updateCurrentFruitImageView() {
         if (fruitQueue.peek() != null) {
-            Image nextFruitTexture = fruitQueue.peek().getTexture();
+            Image currentFruitTexture = fruitQueue.peek().getTexture();
+            currentFruitImageView.setImage(currentFruitTexture);
+        }
+    }
+
+    private void updateNextFruitImageView() {
+        if (fruitQueue.toArray().length > 1) {
+            Fruit secondFruit = (Fruit) fruitQueue.toArray()[1];
+            Image nextFruitTexture = secondFruit.getTexture();
             nextFruitImageView.setImage(nextFruitTexture);
         }
     }
+
 
     protected void initPhysics() {
         FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.CHERRY, FruitType.CHERRY) {
@@ -381,6 +393,11 @@ public class SuikaGame extends GameApplication {
         nextFruitImageView.setX(1095);
         nextFruitImageView.setY(120);
         getGameScene().addUINode(nextFruitImageView);
+
+        currentFruitImageView = new ImageView();
+        currentFruitImageView.setX(10);
+        currentFruitImageView.setY(10);
+        getGameScene().addUINode(currentFruitImageView);
 
         Text scoreText = FXGL.getUIFactoryService().newText("", Color.WHITE, 60);
         scoreText.textProperty().bind(GAME_SCORE.asString());
