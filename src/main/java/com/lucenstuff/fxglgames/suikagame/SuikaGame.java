@@ -76,7 +76,7 @@ public class SuikaGame extends GameApplication {
 
         Entity rectangle = FXGL.entityBuilder()
                 .at(400, 60)
-                .viewWithBBox(new Rectangle(100, 50, Color.BLUE))
+                .viewWithBBox(new Rectangle(100, 50, Color.TRANSPARENT))
                 .with(new CollidableComponent(true))
                 .buildAndAttach();
 
