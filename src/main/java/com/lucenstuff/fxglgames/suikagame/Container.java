@@ -65,7 +65,7 @@ public class Container {
         Entity ContainerImg = FXGL.entityBuilder()
                 .view("container_view.png")
                 .at(387.5, 135)
-                .zIndex(0)
+                .zIndex(10)
                 .buildAndAttach();
 
         return new ContainerEntity(floor, leftWall, rightWall);

@@ -18,21 +18,21 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+
 import java.util.*;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
 
 public class SuikaGame extends GameApplication {
-
-    private IntegerProperty GAME_SCORE;
-
-    private Point2D rectanglePosition = new Point2D(0, 0);
-
     int APP_WIDTH = 1280;
     int APP_HEIGHT = 720;
+    double MIN_X = 340;
+    double MAX_X = 840;
 
-    double minX = 340;
-    double maxX = 840;
+    private IntegerProperty GAME_SCORE;
+    private Point2D rectanglePosition = new Point2D(0, 0);
+    private ImageView nextFruitImageView;
+    private ImageView currentFruitImageView;
 
     @Override
     protected void initSettings(GameSettings settings) {
@@ -65,10 +65,9 @@ public class SuikaGame extends GameApplication {
                 .with(new CollidableComponent(true))
                 .buildAndAttach();
 
-
         Entity line = FXGL.entityBuilder()
                 .at (rectangle.getX() + rectangle.getWidth() , rectangle.getY()+rectangle.getHeight())
-                .view(new Line(0, 0, 0, wallHeight+25) {{
+                .view(new Line(0, 0, 0, wallHeight+15) {{
                     setStroke(Color.WHITE);
                 }})
                 .buildAndAttach();
@@ -79,7 +78,7 @@ public class SuikaGame extends GameApplication {
         FXGL.getInput().addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
             double mouseX = event.getSceneX();
             double newRectangleX = mouseX - (rectangle.getWidth() / 2);
-            newRectangleX = Math.max(minX, Math.min(newRectangleX, maxX));
+            newRectangleX = Math.max(MIN_X, Math.min(newRectangleX, MAX_X));
             rectangle.setX(newRectangleX);
             line.setX(rectangle.getX() + rectangle.getWidth() / 2);
         });
@@ -93,14 +92,14 @@ public class SuikaGame extends GameApplication {
             double imageHeight = currentFruitImageView.getImage().getHeight();
             currentFruitImageView.setX(rectangle.getX()+rectangle.getWidth()/2 - imageWidth/2);
             currentFruitImageView.setY(60+(rectangle.getHeight())-imageHeight);
-            minX = (340+currentFruitImageView.getImage().getWidth()/2);
-            maxX = (FXGL.getAppWidth() - 440 - currentFruitImageView.getImage().getWidth()/2);
+            MIN_X = (340+currentFruitImageView.getImage().getWidth()/2);
+            MAX_X = (FXGL.getAppWidth() - 440 - currentFruitImageView.getImage().getWidth()/2);
         });
 
         FXGL.getInput().addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
             double mouseX = event.getSceneX();
             double newRectangleX = mouseX - (rectangle.getWidth() / 2);
-            newRectangleX = Math.max(minX, Math.min(newRectangleX, maxX));
+            newRectangleX = Math.max(MIN_X, Math.min(newRectangleX, MAX_X));
             rectangle.setX(newRectangleX);
             line.setX(rectangle.getX() + rectangle.getWidth() / 2);
         });
@@ -110,16 +109,19 @@ public class SuikaGame extends GameApplication {
             double imageHeight = currentFruitImageView.getImage().getHeight();
             currentFruitImageView.setX(newX.doubleValue()+rectangle.getWidth()/2 - imageWidth/2);
             currentFruitImageView.setY(60+(rectangle.getHeight())-imageHeight);
-            minX = (340+currentFruitImageView.getImage().getWidth()/2);
-            maxX = (FXGL.getAppWidth() - 440 - currentFruitImageView.getImage().getWidth()/2);
+            MIN_X = (340+currentFruitImageView.getImage().getWidth()/2);
+            MAX_X = (FXGL.getAppWidth() - 440 - currentFruitImageView.getImage().getWidth()/2);
         });
 
     }
 
-    //Ver como encapsular toda la lógica de creacion de Frutas.
+
+
+//    FruitFactory fruitFactory = new FruitFactory(nextFruitImageView, currentFruitImageView);
+
+//    Ver como encapsular toda la lógica de creacion de Frutas.
     private final Queue<Fruit> fruitQueue = new LinkedList<>();
-    private ImageView nextFruitImageView;
-    private ImageView currentFruitImageView;
+
 
     private Entity spawnFruitAt(Point2D currentPosition) {
         if (fruitQueue.isEmpty()) {
