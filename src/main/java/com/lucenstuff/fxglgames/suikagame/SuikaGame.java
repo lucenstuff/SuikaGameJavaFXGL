@@ -4,16 +4,11 @@ import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
-import com.almasb.fxgl.entity.components.CollidableComponent;
 import com.almasb.fxgl.physics.CollisionHandler;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Point2D;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
@@ -23,14 +18,9 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 public class SuikaGame extends GameApplication {
     int APP_WIDTH = 1280;
     int APP_HEIGHT = 720;
-    double MIN_X = 340;
-    double MAX_X = 840;
-
-    long lastClickTime = 0;
-    long cooldownDuration = 650; // in ms
 
     private IntegerProperty GAME_SCORE;
-    private Point2D rectanglePosition = new Point2D(0, 0);
+    private final Point2D rectanglePosition = new Point2D(0, 0);
 
     FruitType[] fruitTypes = {
             FruitType.CHERRY, FruitType.STRAWBERRY, FruitType.GRAPE, FruitType.LEMON, FruitType.ORANGE, FruitType.APPLE, FruitType.PEAR, FruitType.PEACH, FruitType.PINEAPPLE, FruitType.MELON, FruitType.WATERMELON
@@ -51,71 +41,10 @@ public class SuikaGame extends GameApplication {
         double floorHeight = getAppHeight() - getAppHeight()*0.0833;
         double wallHeight = getAppHeight()*0.752;
         double floorWidth = getAppWidth() ;
-        GAME_SCORE = new SimpleIntegerProperty(0);
 
         Container container = new Container(wallThickness, floorHeight, wallHeight, floorWidth);
         ContainerEntity containerEntity = container.createContainer();
-
-        //Encapsular Rectangle y Line en EntityPlayer y Player
-
-        Entity rectangle = FXGL.entityBuilder()
-                .at(400, 60)
-                .viewWithBBox(new Rectangle(100, 50, Color.TRANSPARENT))
-                .with(new CollidableComponent(true))
-                .buildAndAttach();
-
-        Entity line = FXGL.entityBuilder()
-                .at (rectangle.getX() + rectangle.getWidth() , rectangle.getY()+rectangle.getHeight())
-                .view(new Line(0, 0, 0, wallHeight+15) {{
-                    setStroke(Color.WHITE);
-                }})
-                .buildAndAttach();
-
-
-        //Encapsular Inputs en InputHandler
-
-        FXGL.getInput().addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
-            double mouseX = event.getSceneX();
-            double newRectangleX = mouseX - (rectangle.getWidth() / 2);
-            newRectangleX = Math.max(MIN_X, Math.min(newRectangleX, MAX_X));
-            rectangle.setX(newRectangleX);
-            line.setX(rectangle.getX() + rectangle.getWidth() / 2);
-        });
-
-
-
-        FXGL.getInput().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            long currentTime = System.currentTimeMillis();
-            if (currentTime - lastClickTime >= cooldownDuration){
-                lastClickTime = currentTime;
-            Entity newFruit = fruitFactory.spawnFruitAt(rectangle.getPosition().add((rectangle.getWidth() / 2-fruitFactory.currentFruitImageView.getImage().getWidth()/2), 0));
-            FXGL.getGameWorld().addEntity(newFruit);
-            FXGL.play("fruit_drop.wav");
-            double imageWidth = fruitFactory.currentFruitImageView.getImage().getWidth();
-            double imageHeight = fruitFactory.currentFruitImageView.getImage().getHeight();
-            fruitFactory.currentFruitImageView.setX(rectangle.getX()+rectangle.getWidth()/2 - imageWidth/2);
-            fruitFactory.currentFruitImageView.setY(60+(rectangle.getHeight())-imageHeight);
-            MIN_X = (340+fruitFactory.currentFruitImageView.getImage().getWidth()/2);
-            MAX_X = (FXGL.getAppWidth() - 440 - fruitFactory.currentFruitImageView.getImage().getWidth()/2);}
-        });
-
-        FXGL.getInput().addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
-            double mouseX = event.getSceneX();
-            double newRectangleX = mouseX - (rectangle.getWidth() / 2);
-            newRectangleX = Math.max(MIN_X, Math.min(newRectangleX, MAX_X));
-            rectangle.setX(newRectangleX);
-            line.setX(rectangle.getX() + rectangle.getWidth() / 2);
-        });
-
-        rectangle.xProperty().addListener((obs, oldX, newX) -> {
-            double imageWidth = fruitFactory.currentFruitImageView.getImage().getWidth();
-            double imageHeight = fruitFactory.currentFruitImageView.getImage().getHeight();
-            fruitFactory.currentFruitImageView.setX(newX.doubleValue()+rectangle.getWidth()/2 - imageWidth/2);
-            fruitFactory.currentFruitImageView.setY(60+(rectangle.getHeight())-imageHeight);
-            MIN_X = (340+fruitFactory.currentFruitImageView.getImage().getWidth()/2);
-            MAX_X = (FXGL.getAppWidth() - 440 - fruitFactory.currentFruitImageView.getImage().getWidth()/2);
-        });
-
+        Player player = new Player(fruitFactory);
     }
     FruitFactory fruitFactory = new FruitFactory();
 
