@@ -33,6 +33,10 @@ public class SuikaGame extends GameApplication {
     private IntegerProperty GAME_SCORE;
     private Point2D rectanglePosition = new Point2D(0, 0);
 
+    FruitType[] fruitTypes = {
+            FruitType.CHERRY, FruitType.STRAWBERRY, FruitType.GRAPE, FruitType.LEMON, FruitType.ORANGE, FruitType.APPLE, FruitType.PEAR, FruitType.PEACH, FruitType.PINEAPPLE, FruitType.MELON, FruitType.WATERMELON
+    };
+
     @Override
     protected void initSettings(GameSettings settings) {
         settings.setAppIcon("watermelon_view.png");
@@ -117,168 +121,10 @@ public class SuikaGame extends GameApplication {
     FruitFactory fruitFactory = new FruitFactory();
 
     protected void initPhysics() {
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.CHERRY, FruitType.CHERRY) {
-            @Override
-            protected void onCollisionBegin(Entity e1, Entity e2) {
-                Point2D position1 = e1.getPosition();
-                Point2D position2 = e2.getPosition();
-                Point2D spawnPoint = position1.add(position2).multiply(0.5);
-                Entity strawberry = new Strawberry(spawnPoint).buildFruit();
-                FXGL.getGameWorld().addEntity(strawberry);
-                e1.removeFromWorld();
-                e2.removeFromWorld();
-                GAME_SCORE.set(GAME_SCORE.get() + 1);
-                FXGL.play("fruit_merge.wav");
-            }
-        });
 
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.STRAWBERRY, FruitType.STRAWBERRY) {
-            @Override
-            protected void onCollisionBegin(Entity e1, Entity e2) {
-                Point2D position1 = e1.getPosition();
-                Point2D position2 = e2.getPosition();
-                Point2D spawnPoint = position1.add(position2).multiply(0.5);
-                Entity grape = new Grape(spawnPoint).buildFruit();
-                FXGL.getGameWorld().addEntity(grape);
-                e1.removeFromWorld();
-                e2.removeFromWorld();
-                GAME_SCORE.set(GAME_SCORE.get() + 4);
-                FXGL.play("fruit_merge.wav");
-            }
-        });
-
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.GRAPE, FruitType.GRAPE) {
-            @Override
-            protected void onCollisionBegin(Entity e1, Entity e2) {
-                Point2D position1 = e1.getPosition();
-                Point2D position2 = e2.getPosition();
-                Point2D spawnPoint = position1.add(position2).multiply(0.5);
-                Entity lemon = new Lemon(spawnPoint).buildFruit();
-                FXGL.getGameWorld().addEntity(lemon);
-                e1.removeFromWorld();
-                e2.removeFromWorld();
-                GAME_SCORE.set(GAME_SCORE.get() + 9);
-                FXGL.play("fruit_merge.wav");
-            }
-        });
-
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.LEMON, FruitType.LEMON) {
-            @Override
-            protected void onCollisionBegin(Entity e1, Entity e2) {
-                Point2D position1 = e1.getPosition();
-                Point2D position2 = e2.getPosition();
-                Point2D spawnPoint = position1.add(position2).multiply(0.5);
-                Entity orange = new Orange(spawnPoint).buildFruit();
-                FXGL.getGameWorld().addEntity(orange);
-                e1.removeFromWorld();
-                e2.removeFromWorld();
-                GAME_SCORE.set(GAME_SCORE.get() + 14);
-                FXGL.play("fruit_merge.wav");
-            }
-        });
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.ORANGE, FruitType.ORANGE) {
-            @Override
-            protected void onCollisionBegin(Entity e1, Entity e2) {
-                Point2D position1 = e1.getPosition();
-                Point2D position2 = e2.getPosition();
-                Point2D spawnPoint = position1.add(position2).multiply(0.5);
-                Entity apple = new Apple(spawnPoint).buildFruit();
-                FXGL.getGameWorld().addEntity(apple);
-                e1.removeFromWorld();
-                e2.removeFromWorld();
-                GAME_SCORE.set(GAME_SCORE.get() + 20);
-                FXGL.play("fruit_merge.wav");
-            }
-        });
-
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.APPLE, FruitType.APPLE) {
-            @Override
-            protected void onCollisionBegin(Entity e1, Entity e2) {
-                Point2D position1 = e1.getPosition();
-                Point2D position2 = e2.getPosition();
-                Point2D spawnPoint = position1.add(position2).multiply(0.5);
-                Entity pear = new Pear(spawnPoint).buildFruit();
-                FXGL.getGameWorld().addEntity(pear);
-                e1.removeFromWorld();
-                e2.removeFromWorld();
-                GAME_SCORE.set(GAME_SCORE.get() + 27);
-                FXGL.play("fruit_merge.wav");
-            }
-        });
-
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.PEAR, FruitType.PEAR) {
-            @Override
-            protected void onCollisionBegin(Entity e1, Entity e2) {
-                Point2D position1 = e1.getPosition();
-                Point2D position2 = e2.getPosition();
-                Point2D spawnPoint = position1.add(position2).multiply(0.5);
-                Entity peach = new Peach(spawnPoint).buildFruit();
-                FXGL.getGameWorld().addEntity(peach);
-                e1.removeFromWorld();
-                e2.removeFromWorld();
-                GAME_SCORE.set(GAME_SCORE.get() + 35);
-                FXGL.play("fruit_merge.wav");
-            }
-        });
-
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.PEACH, FruitType.PEACH) {
-            @Override
-            protected void onCollisionBegin(Entity e1, Entity e2) {
-                Point2D position1 = e1.getPosition();
-                Point2D position2 = e2.getPosition();
-                Point2D spawnPoint = position1.add(position2).multiply(0.5);
-                Entity pineapple = new Pineapple(spawnPoint).buildFruit();
-                FXGL.getGameWorld().addEntity(pineapple);
-                e1.removeFromWorld();
-                e2.removeFromWorld();
-                GAME_SCORE.set(GAME_SCORE.get() + 44);
-                FXGL.play("fruit_merge.wav");
-            }
-        });
-
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.PINEAPPLE, FruitType.PINEAPPLE) {
-            @Override
-            protected void onCollisionBegin(Entity e1, Entity e2) {
-                Point2D position1 = e1.getPosition();
-                Point2D position2 = e2.getPosition();
-                Point2D spawnPoint = position1.add(position2).multiply(0.5);
-                Entity melon = new Melon(spawnPoint).buildFruit();
-                FXGL.getGameWorld().addEntity(melon);
-                e1.removeFromWorld();
-                e2.removeFromWorld();
-                GAME_SCORE.set(GAME_SCORE.get() + 54);
-                FXGL.play("fruit_merge.wav");
-            }
-        });
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.MELON, FruitType.MELON) {
-            @Override
-            protected void onCollisionBegin(Entity e1, Entity e2) {
-                Point2D position1 = e1.getPosition();
-                Point2D position2 = e2.getPosition();
-                Point2D spawnPoint = position1.add(position2).multiply(0.5);
-                Entity watermelon = new Watermelon(spawnPoint).buildFruit();
-                FXGL.getGameWorld().addEntity(watermelon);
-                e1.removeFromWorld();
-                e2.removeFromWorld();
-                GAME_SCORE.set(GAME_SCORE.get() + 65);
-                FXGL.play("fruit_merge.wav");
-            }
-        });
-        FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.WATERMELON, FruitType.WATERMELON) {
-            @Override
-            protected void onCollisionBegin(Entity e1, Entity e2) {
-                e1.removeFromWorld();
-                e2.removeFromWorld();
-                GAME_SCORE.set(GAME_SCORE.get() + 77);
-                FXGL.play("fruit_merge.wav");
-            }
-        });
+        CollisionsHandler.initCollisionHandlers();
 
         //End Game Condition
-
-        FruitType[] fruitTypes = {
-                FruitType.CHERRY, FruitType.STRAWBERRY, FruitType.GRAPE, FruitType.LEMON, FruitType.ORANGE, FruitType.APPLE, FruitType.PEAR, FruitType.PEACH, FruitType.PINEAPPLE, FruitType.MELON, FruitType.WATERMELON
-        };
 
         for (FruitType fruitType : fruitTypes) {
             FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(fruitType, ContainerType.LOOSE_COLLIDER) {
