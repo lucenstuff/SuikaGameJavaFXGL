@@ -163,8 +163,8 @@ public class SuikaGame extends GameApplication {
         getGameScene().addUINode(fruitFactory.currentFruitImageView);
 
         Text scoreText = FXGL.getUIFactoryService().newText("", Color.WHITE, 60);
-        scoreText.textProperty().bind(GAME_SCORE.asString());
-        scoreText.setX(105);
+        scoreText.textProperty().bind(ScoreManager.getGameScoreProperty().asString());
+        scoreText.setX(95);
         scoreText.setY(160);
         scoreText.setStroke(Color.BLACK);
         scoreText.setStrokeWidth(2);
