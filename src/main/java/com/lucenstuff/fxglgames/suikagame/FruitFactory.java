@@ -1,5 +1,6 @@
 package com.lucenstuff.fxglgames.suikagame;
 
+import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
 import com.lucenstuff.fxglgames.suikagame.fruits.*;
 import javafx.geometry.Point2D;
@@ -9,13 +10,25 @@ import java.util.*;
 public class FruitFactory {
 
     private final Queue<Fruit> fruitQueue = new LinkedList<>();
-    private final ImageView nextFruitImageView;
-    private final ImageView currentFruitImageView;
+    public ImageView nextFruitImageView;
+    public ImageView currentFruitImageView;
 
-    public FruitFactory(ImageView nextFruitImageView, ImageView currentFruitImageView) {
+    public ImageView getNextFruitImageView() {
+        return nextFruitImageView;
+    }
+
+    public void setNextFruitImageView(ImageView nextFruitImageView) {
         this.nextFruitImageView = nextFruitImageView;
+    }
+
+    public ImageView getCurrentFruitImageView() {
+        return currentFruitImageView;
+    }
+
+    public void setCurrentFruitImageView(ImageView currentFruitImageView) {
         this.currentFruitImageView = currentFruitImageView;
     }
+
 
     public Entity spawnFruitAt(Point2D currentPosition) {
         if (fruitQueue.isEmpty()) {
@@ -66,6 +79,11 @@ public class FruitFactory {
             Image currentFruitTexture = fruitQueue.peek().getTexture();
             currentFruitImageView.setImage(currentFruitTexture);
         }
+    }
+
+    void initFruits() {
+        Entity newFruit = spawnFruitAt(new Point2D(10, 1000));
+        FXGL.getGameWorld().addEntity(newFruit);
     }
 
     private void updateNextFruitImageView() {

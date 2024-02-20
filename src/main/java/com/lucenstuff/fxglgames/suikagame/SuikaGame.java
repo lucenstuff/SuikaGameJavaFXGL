@@ -10,7 +10,6 @@ import com.lucenstuff.fxglgames.suikagame.fruits.*;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Point2D;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -19,7 +18,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
-import java.util.*;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
 
@@ -31,8 +29,6 @@ public class SuikaGame extends GameApplication {
 
     private IntegerProperty GAME_SCORE;
     private Point2D rectanglePosition = new Point2D(0, 0);
-    private ImageView nextFruitImageView;
-    private ImageView currentFruitImageView;
 
     @Override
     protected void initSettings(GameSettings settings) {
@@ -53,9 +49,6 @@ public class SuikaGame extends GameApplication {
 
         Container container = new Container(wallThickness, floorHeight, wallHeight, floorWidth);
         ContainerEntity containerEntity = container.createContainer();
-        Entity floor = containerEntity.getFloor();
-        Entity leftWall = containerEntity.getLeftWall();
-        Entity rightWall = containerEntity.getRightWall();
 
         //Encapsular Rectangle y Line en EntityPlayer y Player
 
@@ -85,15 +78,15 @@ public class SuikaGame extends GameApplication {
 
 
         FXGL.getInput().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            Entity newFruit = spawnFruitAt(rectangle.getPosition().add((rectangle.getWidth() / 2-currentFruitImageView.getImage().getWidth()/2), 0));
+            Entity newFruit = fruitFactory.spawnFruitAt(rectangle.getPosition().add((rectangle.getWidth() / 2-fruitFactory.currentFruitImageView.getImage().getWidth()/2), 0));
             FXGL.getGameWorld().addEntity(newFruit);
             FXGL.play("fruit_drop.wav");
-            double imageWidth = currentFruitImageView.getImage().getWidth();
-            double imageHeight = currentFruitImageView.getImage().getHeight();
-            currentFruitImageView.setX(rectangle.getX()+rectangle.getWidth()/2 - imageWidth/2);
-            currentFruitImageView.setY(60+(rectangle.getHeight())-imageHeight);
-            MIN_X = (340+currentFruitImageView.getImage().getWidth()/2);
-            MAX_X = (FXGL.getAppWidth() - 440 - currentFruitImageView.getImage().getWidth()/2);
+            double imageWidth = fruitFactory.currentFruitImageView.getImage().getWidth();
+            double imageHeight = fruitFactory.currentFruitImageView.getImage().getHeight();
+            fruitFactory.currentFruitImageView.setX(rectangle.getX()+rectangle.getWidth()/2 - imageWidth/2);
+            fruitFactory.currentFruitImageView.setY(60+(rectangle.getHeight())-imageHeight);
+            MIN_X = (340+fruitFactory.currentFruitImageView.getImage().getWidth()/2);
+            MAX_X = (FXGL.getAppWidth() - 440 - fruitFactory.currentFruitImageView.getImage().getWidth()/2);
         });
 
         FXGL.getInput().addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
@@ -105,83 +98,16 @@ public class SuikaGame extends GameApplication {
         });
 
         rectangle.xProperty().addListener((obs, oldX, newX) -> {
-            double imageWidth = currentFruitImageView.getImage().getWidth();
-            double imageHeight = currentFruitImageView.getImage().getHeight();
-            currentFruitImageView.setX(newX.doubleValue()+rectangle.getWidth()/2 - imageWidth/2);
-            currentFruitImageView.setY(60+(rectangle.getHeight())-imageHeight);
-            MIN_X = (340+currentFruitImageView.getImage().getWidth()/2);
-            MAX_X = (FXGL.getAppWidth() - 440 - currentFruitImageView.getImage().getWidth()/2);
+            double imageWidth = fruitFactory.currentFruitImageView.getImage().getWidth();
+            double imageHeight = fruitFactory.currentFruitImageView.getImage().getHeight();
+            fruitFactory.currentFruitImageView.setX(newX.doubleValue()+rectangle.getWidth()/2 - imageWidth/2);
+            fruitFactory.currentFruitImageView.setY(60+(rectangle.getHeight())-imageHeight);
+            MIN_X = (340+fruitFactory.currentFruitImageView.getImage().getWidth()/2);
+            MAX_X = (FXGL.getAppWidth() - 440 - fruitFactory.currentFruitImageView.getImage().getWidth()/2);
         });
 
     }
-
-
-
-//    FruitFactory fruitFactory = new FruitFactory(nextFruitImageView, currentFruitImageView);
-
-//    Ver como encapsular toda la lógica de creacion de Frutas.
-    private final Queue<Fruit> fruitQueue = new LinkedList<>();
-
-
-    private Entity spawnFruitAt(Point2D currentPosition) {
-        if (fruitQueue.isEmpty()) {
-            fillFruitQueue(currentPosition);
-        }
-
-        Fruit fruitToSpawn = fruitQueue.poll();
-
-        enqueueRandomFruit(currentPosition);
-
-        updateCurrentFruitImageView();
-        updateNextFruitImageView();
-
-        assert fruitToSpawn != null;
-        Entity newFruit = fruitToSpawn.buildFruit();
-        newFruit.setPosition(currentPosition);
-
-        return newFruit;
-    }
-
-    private void fillFruitQueue(Point2D position) {
-        fruitQueue.addAll(Arrays.asList(
-                new Cherry(position),
-                new Grape(position),
-                new Lemon(position),
-                new Strawberry(position),
-                new Orange(position),
-                new Apple(position)
-        ));
-        Collections.shuffle((List<?>) fruitQueue);
-    }
-
-    private void enqueueRandomFruit(Point2D position) {
-        Fruit[] fruits = {
-                new Cherry(position),
-                new Grape(position),
-                new Lemon(position),
-                new Strawberry(position),
-                new Orange(position),
-                new Apple(position)
-        };
-        int randomIndex = new Random().nextInt(fruits.length);
-        fruitQueue.offer(fruits[randomIndex]);
-    }
-
-    private void updateCurrentFruitImageView() {
-        if (fruitQueue.peek() != null) {
-            Image currentFruitTexture = fruitQueue.peek().getTexture();
-            currentFruitImageView.setImage(currentFruitTexture);
-        }
-    }
-
-    private void updateNextFruitImageView() {
-        if (fruitQueue.toArray().length > 1) {
-            Fruit secondFruit = (Fruit) fruitQueue.toArray()[1];
-            Image nextFruitTexture = secondFruit.getTexture();
-            nextFruitImageView.setImage(nextFruitTexture);
-        }
-    }
-
+    FruitFactory fruitFactory = new FruitFactory();
 
     protected void initPhysics() {
         FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(FruitType.CHERRY, FruitType.CHERRY) {
@@ -371,17 +297,17 @@ public class SuikaGame extends GameApplication {
     }
 
     protected void initUI() {
-        nextFruitImageView = new ImageView();
-        nextFruitImageView.setFitWidth(60);
-        nextFruitImageView.setFitHeight(60);
-        nextFruitImageView.setX(1095);
-        nextFruitImageView.setY(120);
-        getGameScene().addUINode(nextFruitImageView);
+        fruitFactory.nextFruitImageView = new ImageView();
+        fruitFactory.nextFruitImageView.setFitWidth(60);
+        fruitFactory.nextFruitImageView.setFitHeight(60);
+        fruitFactory.nextFruitImageView.setX(1095);
+        fruitFactory.nextFruitImageView.setY(120);
+        getGameScene().addUINode(fruitFactory.nextFruitImageView);
 
-        currentFruitImageView = new ImageView();
-        currentFruitImageView.setX(rectanglePosition.getX());
-        currentFruitImageView.setY(rectanglePosition.getY());
-        getGameScene().addUINode(currentFruitImageView);
+        fruitFactory.currentFruitImageView = new ImageView();
+        fruitFactory.currentFruitImageView.setX(rectanglePosition.getX());
+        fruitFactory.currentFruitImageView.setY(rectanglePosition.getY());
+        getGameScene().addUINode(fruitFactory.currentFruitImageView);
 
         Text scoreText = FXGL.getUIFactoryService().newText("", Color.WHITE, 60);
         scoreText.textProperty().bind(GAME_SCORE.asString());
@@ -406,14 +332,10 @@ public class SuikaGame extends GameApplication {
                 .at(40, 50)
                 .buildAndAttach();
 
-        initFruits();
+        fruitFactory.initFruits();
     }
 
 
-    private void initFruits() {
-        Entity newFruit = spawnFruitAt(new Point2D(10, 1000));
-        FXGL.getGameWorld().addEntity(newFruit);
-    }
     public static void main(String[] args) {
         launch(args);
     }
