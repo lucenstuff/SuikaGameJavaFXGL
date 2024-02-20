@@ -6,8 +6,6 @@ import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.components.CollidableComponent;
 import com.almasb.fxgl.physics.CollisionHandler;
-import com.almasb.fxgl.physics.PhysicsComponent;
-import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.lucenstuff.fxglgames.suikagame.fruits.*;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -53,26 +51,13 @@ public class SuikaGame extends GameApplication {
         double floorWidth = getAppWidth() ;
         GAME_SCORE = new SimpleIntegerProperty(0);
 
-        PhysicsComponent containerPhysics = new PhysicsComponent();
-        containerPhysics.setBodyType(BodyType.STATIC);
+        Container container = new Container(wallThickness, floorHeight, wallHeight, floorWidth);
+        ContainerEntity containerEntity = container.createContainer();
+        Entity floor = containerEntity.getFloor();
+        Entity leftWall = containerEntity.getLeftWall();
+        Entity rightWall = containerEntity.getRightWall();
 
-        PhysicsComponent wallPhysics = new PhysicsComponent();
-        wallPhysics.setBodyType(BodyType.STATIC);
-
-        PhysicsComponent rightWallPhysics = new PhysicsComponent();
-        rightWallPhysics.setBodyType(BodyType.STATIC);
-
-
-        Entity backgroundImg = FXGL.entityBuilder()
-                .view("background_view.png")
-                .buildAndAttach();
-
-        Entity ContainerImg = FXGL.entityBuilder()
-                .view("container_view.png")
-                .at(387.5, 135)
-                .zIndex(0)
-                .buildAndAttach();
-
+        //Encapsular Rectangle y Line en EntityPlayer y Player
 
         Entity rectangle = FXGL.entityBuilder()
                 .at(400, 60)
@@ -80,12 +65,6 @@ public class SuikaGame extends GameApplication {
                 .with(new CollidableComponent(true))
                 .buildAndAttach();
 
-        Entity looseCollider = FXGL.entityBuilder()
-                .type(ContainerType.LOOSE_COLLIDER)
-                .at(0, 130)
-                .viewWithBBox(new Rectangle(floorWidth, 15, Color.RED))
-                .with(new CollidableComponent(true))
-                .buildAndAttach();
 
         Entity line = FXGL.entityBuilder()
                 .at (rectangle.getX() + rectangle.getWidth() , rectangle.getY()+rectangle.getHeight())
@@ -94,30 +73,8 @@ public class SuikaGame extends GameApplication {
                 }})
                 .buildAndAttach();
 
-        Entity floor = FXGL.entityBuilder()
-                .type(ContainerType.FLOOR)
-                .at(0, floorHeight)
-                .viewWithBBox(new Rectangle(floorWidth, wallThickness, Color.GRAY))
-                .with(new CollidableComponent(true))
-                .with(containerPhysics)
-                .buildAndAttach();
 
-        Entity leftWall = FXGL.entityBuilder()
-                .type(ContainerType.WALL)
-                .at(387.5, floorHeight - wallHeight)
-                .viewWithBBox(new Rectangle(wallThickness, wallHeight, Color.GRAY))
-                .with(new PhysicsComponent(), new CollidableComponent(true))
-
-                .buildAndAttach();
-
-        Entity rightWall = FXGL.entityBuilder()
-                .type(ContainerType.WALL)
-                .at(getAppWidth() - wallThickness - 387.5, floorHeight - wallHeight)
-                .viewWithBBox(new Rectangle(wallThickness, wallHeight, Color.GRAY))
-                .with(rightWallPhysics, new CollidableComponent(true))
-                .buildAndAttach();
-
-
+        //Encapsular Inputs en InputHandler
 
         FXGL.getInput().addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
             double mouseX = event.getSceneX();
@@ -157,9 +114,9 @@ public class SuikaGame extends GameApplication {
             maxX = (FXGL.getAppWidth() - 440 - currentFruitImageView.getImage().getWidth()/2);
         });
 
-
-
     }
+
+    //Ver como encapsular toda la lógica de creacion de Frutas.
     private final Queue<Fruit> fruitQueue = new LinkedList<>();
     private ImageView nextFruitImageView;
     private ImageView currentFruitImageView;
