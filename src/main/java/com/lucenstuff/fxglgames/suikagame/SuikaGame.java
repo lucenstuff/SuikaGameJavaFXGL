@@ -27,6 +27,9 @@ public class SuikaGame extends GameApplication {
     double MIN_X = 340;
     double MAX_X = 840;
 
+    long lastClickTime = 0;
+    long cooldownDuration = 650; // in ms
+
     private IntegerProperty GAME_SCORE;
     private Point2D rectanglePosition = new Point2D(0, 0);
 
@@ -77,7 +80,11 @@ public class SuikaGame extends GameApplication {
         });
 
 
+
         FXGL.getInput().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastClickTime >= cooldownDuration){
+                lastClickTime = currentTime;
             Entity newFruit = fruitFactory.spawnFruitAt(rectangle.getPosition().add((rectangle.getWidth() / 2-fruitFactory.currentFruitImageView.getImage().getWidth()/2), 0));
             FXGL.getGameWorld().addEntity(newFruit);
             FXGL.play("fruit_drop.wav");
@@ -86,7 +93,7 @@ public class SuikaGame extends GameApplication {
             fruitFactory.currentFruitImageView.setX(rectangle.getX()+rectangle.getWidth()/2 - imageWidth/2);
             fruitFactory.currentFruitImageView.setY(60+(rectangle.getHeight())-imageHeight);
             MIN_X = (340+fruitFactory.currentFruitImageView.getImage().getWidth()/2);
-            MAX_X = (FXGL.getAppWidth() - 440 - fruitFactory.currentFruitImageView.getImage().getWidth()/2);
+            MAX_X = (FXGL.getAppWidth() - 440 - fruitFactory.currentFruitImageView.getImage().getWidth()/2);}
         });
 
         FXGL.getInput().addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
