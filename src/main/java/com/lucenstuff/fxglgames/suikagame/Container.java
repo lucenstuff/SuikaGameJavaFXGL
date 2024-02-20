@@ -32,7 +32,7 @@ public class Container {
         Entity floor = FXGL.entityBuilder()
                 .type(ContainerType.FLOOR)
                 .at(0, floorHeight)
-                .viewWithBBox(new javafx.scene.shape.Rectangle(floorWidth, wallThickness, Color.GRAY))
+                .viewWithBBox(new javafx.scene.shape.Rectangle(floorWidth, wallThickness, Color.TRANSPARENT))
                 .with(new CollidableComponent(true))
                 .with(containerPhysics)
                 .buildAndAttach();
@@ -40,21 +40,21 @@ public class Container {
         Entity leftWall = FXGL.entityBuilder()
                 .type(ContainerType.WALL)
                 .at(387.5, floorHeight - wallHeight)
-                .viewWithBBox(new javafx.scene.shape.Rectangle(wallThickness, wallHeight, Color.GRAY))
+                .viewWithBBox(new javafx.scene.shape.Rectangle(wallThickness, wallHeight, Color.TRANSPARENT))
                 .with(new PhysicsComponent(), new CollidableComponent(true))
                 .buildAndAttach();
 
         Entity rightWall = FXGL.entityBuilder()
                 .type(ContainerType.WALL)
                 .at(getAppWidth() - wallThickness - 387.5, floorHeight - wallHeight)
-                .viewWithBBox(new Rectangle(wallThickness, wallHeight, Color.GRAY))
+                .viewWithBBox(new Rectangle(wallThickness, wallHeight, Color.TRANSPARENT))
                 .with(rightWallPhysics, new CollidableComponent(true))
                 .buildAndAttach();
 
         Entity looseCollider = FXGL.entityBuilder()
                 .type(ContainerType.LOOSE_COLLIDER)
                 .at(0, 130)
-                .viewWithBBox(new Rectangle(floorWidth, 15, Color.RED))
+                .viewWithBBox(new Rectangle(floorWidth, 15, Color.TRANSPARENT))
                 .with(new CollidableComponent(true))
                 .buildAndAttach();
 
