@@ -6,7 +6,7 @@ import com.almasb.fxgl.physics.CollisionHandler;
 import com.lucenstuff.fxglgames.suikagame.fruits.*;
 import javafx.geometry.Point2D;
 
-public class CollisionsHandler {
+public class FruitCollisionsHandler {
 
     public static void initCollisionHandlers() {
         FXGL.getPhysicsWorld().addCollisionHandler(getCollisionHandler(FruitType.CHERRY, FruitType.CHERRY));
@@ -195,7 +195,6 @@ public class CollisionsHandler {
                 FXGL.play("fruit_merge.wav");
             }
         };
-
 
     }
 }

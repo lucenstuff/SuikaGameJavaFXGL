@@ -6,7 +6,6 @@ import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.components.CollidableComponent;
 import com.almasb.fxgl.physics.CollisionHandler;
-import com.lucenstuff.fxglgames.suikagame.fruits.*;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Point2D;
@@ -122,9 +121,7 @@ public class SuikaGame extends GameApplication {
 
     protected void initPhysics() {
 
-        CollisionsHandler.initCollisionHandlers();
-
-        //End Game Condition
+        FruitCollisionsHandler.initCollisionHandlers();
 
         for (FruitType fruitType : fruitTypes) {
             FXGL.getPhysicsWorld().addCollisionHandler(new CollisionHandler(fruitType, ContainerType.LOOSE_COLLIDER) {
@@ -187,7 +184,6 @@ public class SuikaGame extends GameApplication {
 
         fruitFactory.initFruits();
     }
-
 
     public static void main(String[] args) {
         launch(args);
