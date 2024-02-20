@@ -5,7 +5,6 @@ import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.physics.CollisionHandler;
-import javafx.beans.property.IntegerProperty;
 import javafx.geometry.Point2D;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -18,10 +17,7 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 public class SuikaGame extends GameApplication {
     int APP_WIDTH = 1280;
     int APP_HEIGHT = 720;
-
-    private IntegerProperty GAME_SCORE;
     private final Point2D rectanglePosition = new Point2D(0, 0);
-
     FruitType[] fruitTypes = {
             FruitType.CHERRY, FruitType.STRAWBERRY, FruitType.GRAPE, FruitType.LEMON, FruitType.ORANGE, FruitType.APPLE, FruitType.PEAR, FruitType.PEACH, FruitType.PINEAPPLE, FruitType.MELON, FruitType.WATERMELON
     };
@@ -67,8 +63,8 @@ public class SuikaGame extends GameApplication {
     }
 
     private void endGame() {
-        FXGL.getDialogService().showMessageBox("Game Over, your score is: " + GAME_SCORE.get()+"\n Do you want to play again? ", () -> {
-            GAME_SCORE.set(0);
+        FXGL.getDialogService().showMessageBox("Game Over, your score is: " + ScoreManager.getGameScore()+"\n Do you want to play again? ", () -> {
+            ScoreManager.setGameScore(0);
             for (Enum  fruitType : FruitType.values()) {
                 getGameWorld().getEntitiesByType(fruitType).forEach(Entity::removeFromWorld);
             }

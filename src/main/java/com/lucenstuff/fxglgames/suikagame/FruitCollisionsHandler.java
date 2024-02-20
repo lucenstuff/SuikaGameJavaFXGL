@@ -120,8 +120,8 @@ public class FruitCollisionsHandler {
                 Point2D position1 = e1.getPosition();
                 Point2D position2 = e2.getPosition();
                 Point2D spawnPoint = position1.add(position2).multiply(0.5);
-                Entity orange = new Orange(spawnPoint).buildFruit();
-                FXGL.getGameWorld().addEntity(orange);
+                Entity apple = new Apple(spawnPoint).buildFruit();
+                FXGL.getGameWorld().addEntity(apple);
                 e1.removeFromWorld();
                 e2.removeFromWorld();
                 ScoreManager.addToGameScore(20);
