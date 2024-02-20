@@ -403,7 +403,12 @@ public class SuikaGame extends GameApplication {
     }
 
     private void endGame() {
-        FXGL.getDialogService().showMessageBox("Game Over, your score is: " + GAME_SCORE.get());
+        FXGL.getDialogService().showMessageBox("Game Over, your score is: " + GAME_SCORE.get()+"\n Do you want to play again? ", () -> {
+            GAME_SCORE.set(0);
+            for (Enum  fruitType : FruitType.values()) {
+                getGameWorld().getEntitiesByType(fruitType).forEach(Entity::removeFromWorld);
+            }
+        });
     }
 
     protected void initUI() {
