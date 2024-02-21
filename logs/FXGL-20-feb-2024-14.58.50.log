@@ -1,0 +1,23 @@
+14:58:45.544 [main                     ] DEBUG Logger               - Configured Logger
+14:58:45.581 [main                     ] DEBUG GameApplication      - Logging settings
+Title: Suika FXGL
+Version: 0.1
+Width: 1280
+Height: 720
+Fullscreen: false
+Intro: false
+Profiling: false
+Single step:false
+App Mode: DEVELOPER
+Menu Key: ESCAPE
+Stage Style: DECORATED
+Scene Factory: class com.almasb.fxgl.app.scene.SceneFactory
+
+14:58:46.120 [JavaFX Application Thread] DEBUG FXGLApplication      - Initializing FXGL
+14:58:46.124 [JavaFX Application Thread] INFO  Engine               - FXGL-21 (28.12.2023 13.35) on WINDOWS (J:21.0.2 FX:21.0.1)
+14:58:46.125 [JavaFX Application Thread] DEBUG Engine               - JRE Vendor Name: Oracle Corporation
+14:58:46.125 [JavaFX Application Thread] DEBUG Engine               - Running on OS: Windows 10 version 10.0
+14:58:46.125 [JavaFX Application Thread] DEBUG Engine               - Architecture: amd64
+14:58:46.125 [JavaFX Application Thread] INFO  Engine               - Source code and latest versions at: https://github.com/AlmasB/FXGL
+14:58:46.126 [JavaFX Application Thread] INFO  Engine               -       Ask questions and discuss at: https://github.com/AlmasB/FXGL/discussions
+14:58:46.126 [JavaFX Application Thread] INFO  Engine               -              Join the FXGL chat at: https://gitter.im/AlmasB/FXGL
